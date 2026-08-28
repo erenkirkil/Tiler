@@ -1,0 +1,33 @@
+# ===== Derleme çıktısı =====
+Tiler
+test/run
+*.dmg
+*.zip
+.signing/
+
+# ===== Claude / AI araçları =====
+.claude/
+.claude.json
+CLAUDE.md
+AGENTS.md
+CONTEXT.md
+.superpowers/
+sprints/
+todos/
+TODO.md
+TODOS.md
+.aider*
+.cursor/
+.cursorrules
+.windsurf/
+
+# ===== Özel geliştirme notları (pakete girmez) =====
+docs/
+
+# ===== macOS =====
+.DS_Store
+
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
