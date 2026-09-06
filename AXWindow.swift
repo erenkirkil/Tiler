@@ -96,6 +96,14 @@ final class AXWindow {
         return settable.boolValue
     }
 
+    /// Tanılama için: pencerenin ait olduğu uygulamanın bundle kimliği.
+    var bundleID: String {
+        var pid: pid_t = 0
+        guard AXUIElementGetPid(appElement, &pid) == .success,
+              let app = NSRunningApplication(processIdentifier: pid) else { return "?" }
+        return app.bundleIdentifier ?? app.localizedName ?? "?"
+    }
+
     var windowID: CGWindowID {
         var id: CGWindowID = 0
         if let fn = axGetWindow, fn(element, &id) == .success, id != 0 { return id }
@@ -128,8 +136,11 @@ final class AXWindow {
             if AXWindow.matches(actual, target) { return actual }
 
             if attempt == 2 {
+                // privacy: .public şart — os.Logger interpolasyonu varsayılan olarak
+                // <private> diye gizler ve tanılama tamamen işe yaramaz hale gelir.
                 Log.window.error(
-                    "istenen \(String(describing: target)), sonuç \(String(describing: actual))")
+                    "setFrame tutmadı — uygulama=\(self.bundleID, privacy: .public) boyutlandırılabilir=\(self.isResizable, privacy: .public) istenen=\(NSStringFromRect(target), privacy: .public) sonuç=\(NSStringFromRect(actual), privacy: .public)"
+                )
                 return actual
             }
             usleep(25_000)   // 25 ms — yavaş yanıt veren uygulamalara nefes payı

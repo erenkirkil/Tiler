@@ -13,6 +13,7 @@ PURE=(
   "$SRC/ScreenGeometry.swift"
   "$SRC/WindowHistory.swift"
   "$SRC/Shortcut.swift"
+  "$SRC/NormalizedShortcut.swift"
 )
 
 swiftc -swift-version 5 "${PURE[@]}" "$SRC/test/main.swift" -o "$OUT"

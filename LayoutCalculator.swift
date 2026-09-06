@@ -15,11 +15,31 @@ enum LayoutCalculator {
     ///   - action: Uygulanacak eylem.
     ///   - usable: Ekranın kullanılabilir alanı (menü çubuğu ve Dock çıkarılmış).
     ///   - step: Döngüdeki sıfır tabanlı adım. `action.cycleLength` ile sınırlanır.
+    ///   - currentSize: Pencerenin mevcut boyutu (sadece boyutunu koruyan eylemler için gereklidir).
     /// - Returns: Hedef dikdörtgen; eylem bir düzen hesabı gerektirmiyorsa `nil`.
-    static func targetRect(action: WindowAction, usable: CGRect, step: Int) -> CGRect? {
+    static func targetRect(action: WindowAction, usable: CGRect, step: Int, currentSize: CGSize = .zero) -> CGRect? {
         switch action {
         case .fill:
             return usable
+
+        case .center:
+            // Sadece ortala, boyutu koru. Ancak kullanılabilir alandan büyükse sınırla.
+            var w = min(currentSize.width, usable.width)
+            var h = min(currentSize.height, usable.height)
+            
+            // Eğer pencere zaten ekranı kaplıyorsa (veya çok yakınsa), ortalamanın
+            // bir etkisi olmaz. Bu durumda mantıklı bir varsayılan boyuta (%70) küçültüp ortala.
+            if w >= usable.width - 5 && h >= usable.height - 5 {
+                w = Geometry.floorTolerant(usable.width * 0.7)
+                h = Geometry.floorTolerant(usable.height * 0.7)
+            }
+            
+            return CGRect(
+                x: usable.midX - w / 2,
+                y: usable.midY - h / 2,
+                width: w,
+                height: h
+            )
 
         case .left:
             let width = fractionWidth(usable: usable, step: step)

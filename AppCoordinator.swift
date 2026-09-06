@@ -80,7 +80,7 @@ final class AppCoordinator {
             history.record(windowID: window.windowID, action: action,
                            step: 0, rect: window.frame ?? destination)
 
-        case .left, .right, .fill:
+        case .left, .right, .fill, .center:
             guard exitFullScreenIfNeeded(window) else { return }
             guard let liveFrame = window.frame else { return }
             // Tam ekrandan çıkmış olabiliriz; ekranı yeniden tespit et.
@@ -90,7 +90,7 @@ final class AppCoordinator {
             let step = history.nextStep(windowID: window.windowID, action: action,
                                         currentRect: liveFrame)
             guard let zone = LayoutCalculator.targetRect(
-                    action: action, usable: screen.usable, step: step) else { return }
+                    action: action, usable: screen.usable, step: step, currentSize: liveFrame.size) else { return }
 
             // Sabit boyutlu pencereler (sistem diyalogları, bazı yardımcı paneller)
             // yeniden boyutlandırılamaz; bölgeyi doldurmak yerine içinde hizalanırlar.

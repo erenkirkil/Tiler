@@ -81,6 +81,7 @@ struct Shortcut: Equatable, Codable {
             .left:            Shortcut(keyCode: 123, carbonModifiers: base),
             .right:           Shortcut(keyCode: 124, carbonModifiers: base),
             .fill:            Shortcut(keyCode: 126, carbonModifiers: base),
+            .center:          Shortcut(keyCode: 125, carbonModifiers: base),
             .fullScreen:      Shortcut(keyCode: 3,   carbonModifiers: base),
             .nextDisplay:     Shortcut(keyCode: 124, carbonModifiers: hyper),
             .previousDisplay: Shortcut(keyCode: 123, carbonModifiers: hyper),

@@ -33,6 +33,13 @@ struct WindowHistory {
     /// karşılaştırma aksi halde daima başarısız olur.
     mutating func record(windowID: CGWindowID, action: WindowAction,
                          step: Int, rect: CGRect) {
+        // RAM Optimizasyonu: Zombi pencerelerin (kapatılmış pencereler) hafızada
+        // birikmesini önlemek için, kayıt sayısı 100'ü aştığında geçmişi temizle.
+        // 100 pencere limiti günlük kullanım için fazlasıyla yeterlidir.
+        if entries.count > 100 {
+            entries.removeAll(keepingCapacity: false)
+        }
+        
         entries[windowID] = Entry(action: action, step: step, rect: rect)
     }
 

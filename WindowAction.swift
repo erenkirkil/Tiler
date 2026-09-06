@@ -6,6 +6,7 @@ enum WindowAction: String, CaseIterable {
     case left
     case right
     case fill
+    case center
     case fullScreen
     case nextDisplay
     case previousDisplay
@@ -16,7 +17,7 @@ enum WindowAction: String, CaseIterable {
         switch self {
         case .left, .right:
             return 3    // yarım → 1/3 → 2/3
-        case .fill, .fullScreen, .nextDisplay, .previousDisplay:
+        case .fill, .center, .fullScreen, .nextDisplay, .previousDisplay:
             return 1
         }
     }
@@ -27,6 +28,7 @@ enum WindowAction: String, CaseIterable {
         case .left:            return "Sol"
         case .right:           return "Sağ"
         case .fill:            return "Ekranı doldur"
+        case .center:          return "Ortala"
         case .fullScreen:      return "Native tam ekran"
         case .nextDisplay:     return "Sonraki ekran"
         case .previousDisplay: return "Önceki ekran"

@@ -64,6 +64,12 @@ suite("LayoutCalculator") {
     // 1600x1000 kullanılabilir alan, Quartz uzayında (0,0) sol üstte.
     let usable = CGRect(x: 0, y: 0, width: 1600, height: 1000)
 
+    expectRect(LayoutCalculator.targetRect(action: .center, usable: usable, step: 0, currentSize: CGSize(width: 800, height: 600))!,
+               CGRect(x: 400, y: 200, width: 800, height: 600), "ortala boyutu korur ve ortaya yerleştirir")
+
+    expectRect(LayoutCalculator.targetRect(action: .center, usable: usable, step: 0, currentSize: CGSize(width: 1600, height: 1000))!,
+               CGRect(x: 240, y: 150, width: 1120, height: 700), "doldurulmuş pencere %70 boyutuna küçültülüp ortalanır")
+
     expectRect(LayoutCalculator.targetRect(action: .left, usable: usable, step: 0)!,
                CGRect(x: 0, y: 0, width: 800, height: 1000), "sol adım 0 = sol yarım")
     expectRect(LayoutCalculator.targetRect(action: .left, usable: usable, step: 1)!,
@@ -288,6 +294,53 @@ suite("Shortcut") {
     let decoded = try! JSONDecoder().decode(Shortcut.self, from: encoded)
     expectEqual(decoded, left, "Shortcut kodlama/çözme turu")
 }
+
+
+suite("NormalizedShortcut") {
+    let S = NormalizedShortcut.maskShift
+    let C = NormalizedShortcut.maskControl
+    let O = NormalizedShortcut.maskOption
+    let M = NormalizedShortcut.maskCommand
+    let F = NormalizedShortcut.maskFunction
+
+    // Carbon -> normalize
+    let carbon = NormalizedShortcut.fromCarbon(
+        keyCode: 3, carbonModifiers: Shortcut.control | Shortcut.option | Shortcut.shift)
+    expectEqual(carbon.mask, S | C | O, "Carbon Ctrl+Opt+Shift normalize")
+    expectEqual(carbon.keyCode, 3, "Carbon keyCode korunur")
+    expectEqual(NormalizedShortcut.fromCarbon(keyCode: 12, carbonModifiers: Shortcut.cmd).mask,
+                M, "Carbon sadece Cmd")
+
+    // AX menü maskesi: bit0=Shift, bit1=Option, bit2=Control,
+    // bit3 SET DEĞİLSE Command (ters mantık!), bit4=fn
+    expectEqual(NormalizedShortcut.fromAXMenu(keyCode: 12, axModifiers: 0).mask, M,
+                "AX mods=0 sadece Cmd demektir, modifier yok demek değil")
+    expectEqual(NormalizedShortcut.fromAXMenu(keyCode: 6, axModifiers: 1).mask, M | S,
+                "AX mods=1 Cmd+Shift")
+    expectEqual(NormalizedShortcut.fromAXMenu(keyCode: 12, axModifiers: 2).mask, M | O,
+                "AX mods=2 Cmd+Option")
+    expectEqual(NormalizedShortcut.fromAXMenu(keyCode: 12, axModifiers: 4).mask, M | C,
+                "AX mods=4 Cmd+Control")
+    expectEqual(NormalizedShortcut.fromAXMenu(keyCode: 14, axModifiers: 8).mask, 0,
+                "AX bit3 set ise Command YOKTUR")
+    expectEqual(NormalizedShortcut.fromAXMenu(keyCode: 14, axModifiers: 24).mask, F,
+                "AX mods=24 (fn + Cmd yok) sadece fn")
+    expectEqual(NormalizedShortcut.fromAXMenu(keyCode: 123, axModifiers: 28).mask, F | C,
+                "AX mods=28 fn+Control (macOS döşeme öğeleri)")
+
+    // Aynı kısayol iki kaynaktan gelince eşit olmalı — sözlük anahtarı olarak
+    // kullanılacağı için bu şart.
+    let fromCarbon = NormalizedShortcut.fromCarbon(
+        keyCode: 12, carbonModifiers: Shortcut.cmd | Shortcut.shift)
+    let fromMenu = NormalizedShortcut.fromAXMenu(keyCode: 12, axModifiers: 1)
+    expectEqual(fromCarbon, fromMenu, "iki kaynaktan gelen aynı kısayol eşit")
+
+    // Bir Shortcut doğrudan normalize edilebilmeli.
+    let sc = Shortcut(keyCode: 123, carbonModifiers: Shortcut.control | Shortcut.option
+                                                     | Shortcut.shift)
+    expectEqual(sc.normalized.mask, S | C | O, "Shortcut.normalized")
+}
+
 
 // --- Sonuç ---
 
