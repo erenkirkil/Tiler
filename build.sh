@@ -45,12 +45,23 @@ if [ "$MODE" != "release" ]; then
   exit 0
 fi
 
-echo "== Notarization =="
-ZIP="$SRC/Tiler.zip"
-rm -f "$ZIP"
-ditto -c -k --keepParent "$APP" "$ZIP"
-xcrun notarytool submit "$ZIP" --keychain-profile "$NOTARY_PROFILE" --wait
-xcrun stapler staple "$APP"
-rm -f "$ZIP"
-spctl --assess --type execute --verbose=4 "$APP"
-echo "OK (notarize edilmiş): $APP"
+echo "== Notarization için DMG oluşturuluyor =="
+DMG="$SRC/Tiler-Release.dmg"
+rm -f "$DMG"
+rm -rf "/tmp/TilerRelease"
+mkdir -p "/tmp/TilerRelease"
+cp -R "$APP" "/tmp/TilerRelease/"
+ln -s /Applications "/tmp/TilerRelease/Applications"
+hdiutil create -volname "Tiler" -srcfolder "/tmp/TilerRelease" -ov -format UDZO "$DMG"
+rm -rf "/tmp/TilerRelease"
+
+echo "== DMG İmzalanıyor =="
+codesign --force --sign "$SIGN_ID" --timestamp "$DMG"
+
+echo "== DMG Apple'a Gönderiliyor (Notarization) =="
+xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
+
+echo "== Ticket DMG'ye Zımbalanıyor =="
+xcrun stapler staple "$DMG"
+
+echo "OK (Notarize edilmiş dağıtıma hazır DMG): $DMG"
