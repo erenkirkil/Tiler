@@ -2,7 +2,7 @@ import CoreGraphics
 
 /// Tek bir ekranın Quartz uzayındaki geometrisi.
 /// `usable`, menü çubuğu ve Dock çıkarıldıktan sonra kalan alandır.
-struct ScreenInfo {
+struct ScreenInfo: Sendable {
     let displayID: CGDirectDisplayID
     let frame: CGRect
     let usable: CGRect

@@ -2,7 +2,7 @@ import Foundation
 
 /// Kullanıcının tetikleyebileceği altı eylem.
 /// Ham değerler `UserDefaults` anahtarı olarak da kullanıldığı için değiştirilmemelidir.
-enum WindowAction: String, CaseIterable {
+enum WindowAction: String, CaseIterable, Sendable {
     case left
     case right
     case fill

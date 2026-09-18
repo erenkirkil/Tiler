@@ -4,7 +4,7 @@ import Foundation
 /// (`cmdKey` 256, `shiftKey` 512, `optionKey` 2048, `controlKey` 4096) çünkü
 /// `RegisterEventHotKey` bunları bekler. Cocoa bayraklarıyla (`Cmd` 0x100000)
 /// karıştırılmamalıdır — karıştırılırsa maskeler sessizce yanlış yorumlanır.
-struct Shortcut: Equatable, Codable {
+struct Shortcut: Equatable, Codable, Sendable {
     let keyCode: UInt32
     let carbonModifiers: UInt32
 

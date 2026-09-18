@@ -5,6 +5,7 @@ import Foundation
 var failureCount = 0
 var checkCount = 0
 
+@MainActor
 func check(_ condition: Bool, _ name: String) {
     checkCount += 1
     if condition {
@@ -15,6 +16,7 @@ func check(_ condition: Bool, _ name: String) {
     }
 }
 
+@MainActor
 func expectRect(_ actual: CGRect, _ expected: CGRect, _ name: String) {
     checkCount += 1
     let tol: CGFloat = 0.5
@@ -32,6 +34,7 @@ func expectRect(_ actual: CGRect, _ expected: CGRect, _ name: String) {
     }
 }
 
+@MainActor
 func expectEqual<T: Equatable>(_ actual: T, _ expected: T, _ name: String) {
     checkCount += 1
     if actual == expected {
@@ -42,6 +45,7 @@ func expectEqual<T: Equatable>(_ actual: T, _ expected: T, _ name: String) {
     }
 }
 
+@MainActor
 func suite(_ name: String, _ body: () -> Void) {
     print("\n\(name)")
     body()

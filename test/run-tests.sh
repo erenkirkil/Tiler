@@ -16,7 +16,7 @@ PURE=(
   "$SRC/NormalizedShortcut.swift"
 )
 
-swiftc -swift-version 5 "${PURE[@]}" "$SRC/test/main.swift" -o "$OUT"
+swiftc -swift-version 6 "${PURE[@]}" "$SRC/test/main.swift" -o "$OUT"
 "$OUT"
 STATUS=$?
 rm -f "$OUT"

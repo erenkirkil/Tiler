@@ -45,7 +45,7 @@ final class AXWindow {
     /// Sistem izin diyaloğunu gösterir. Kullanıcı daha önce reddettiyse diyalog
     /// bir daha çıkmaz; o durumda çağıran taraf Sistem Ayarları'na yönlendirmelidir.
     static func requestPermission() {
-        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+        let options = ["AXTrustedCheckOptionPrompt": true]
         _ = AXIsProcessTrustedWithOptions(options as CFDictionary)
     }
 

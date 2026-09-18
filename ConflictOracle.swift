@@ -2,7 +2,7 @@ import Cocoa
 import ApplicationServices
 
 /// Bir kısayolu kimin sahiplendiği.
-enum ConflictOwner: Equatable {
+enum ConflictOwner: Equatable, Sendable {
     case system
     case app(String)
 

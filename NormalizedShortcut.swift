@@ -11,7 +11,7 @@ import Foundation
 /// Karşılaştırma daima bu tipe indirgenerek yapılır. Karakterle karşılaştırma
 /// **asla** yapılmaz: karakter klavye düzenine bağlıdır (Türkçe düzende aynı fiziksel
 /// tuş farklı karakter üretir), sanal tuş kodu değildir.
-struct NormalizedShortcut: Hashable {
+struct NormalizedShortcut: Hashable, Sendable {
     let keyCode: UInt32
     let mask: UInt8
 

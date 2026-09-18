@@ -17,7 +17,7 @@ NOTARY_PROFILE="${TILER_NOTARY_PROFILE:-tiler-notary}"
 MODE="${1:-dev}"
 
 echo "== Derleniyor =="
-swiftc -O -swift-version 5 "$SRC"/*.swift -o "$SRC/Tiler" \
+swiftc -O -swift-version 6 "$SRC"/*.swift -o "$SRC/Tiler" \
   -framework Cocoa -framework ApplicationServices -framework Carbon
 
 echo "== .app paketi oluşturuluyor =="

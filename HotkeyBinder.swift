@@ -14,7 +14,7 @@ final class HotkeyBinder {
 
     /// Carbon geri çağrısı C fonksiyon işaretçisidir ve bağlam yakalayamaz;
     /// tek örnek bu global üzerinden bulunur.
-    fileprivate static var shared: HotkeyBinder?
+    nonisolated(unsafe) fileprivate static var shared: HotkeyBinder?
 
     /// 'TILR' — bu uygulamanın kısayol imzası.
     private static let signature: OSType = 0x54_49_4C_52

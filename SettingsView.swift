@@ -1,7 +1,8 @@
 import SwiftUI
 import Combine
 
-class SettingsViewModel: ObservableObject {
+@MainActor
+final class SettingsViewModel: ObservableObject {
     @Published var shortcuts: [WindowAction: Shortcut?] = [:]
     @Published var conflicts: [WindowAction: [ConflictOwner]] = [:]
     @Published var recordingAction: WindowAction? = nil {
@@ -31,13 +32,13 @@ class SettingsViewModel: ObservableObject {
     
     func scanConflicts() {
         isScanning = true
-        DispatchQueue.global(qos: .userInitiated).async {
-            let oracle = ConflictOracle.scan()
-            DispatchQueue.main.async {
-                self.oracleCache = oracle
-                self.isScanning = false
-                self.updateConflicts()
-            }
+        Task {
+            let oracle = await Task.detached(priority: .userInitiated) {
+                ConflictOracle.scan()
+            }.value
+            self.oracleCache = oracle
+            self.isScanning = false
+            self.updateConflicts()
         }
     }
     
@@ -105,7 +106,7 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
-    deinit {
+    isolated deinit {
         if let monitor = eventMonitor {
             NSEvent.removeMonitor(monitor)
         }
